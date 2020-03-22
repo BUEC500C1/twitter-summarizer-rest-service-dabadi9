@@ -1,0 +1,7 @@
+tweepy
+requests
+configparser
+Image
+Pillow
+google-cloud 
+google-cloud-vision
