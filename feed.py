@@ -2,14 +2,14 @@ import tweepy
 from google.cloud import vision
 import io
 from PIL import Image
-from datetime import datetime
+import datetime
 import urllib.request
 import os
 import configparser
 
 
 def getFeed(handle, count):
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="key.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
     config = configparser.ConfigParser()
     config.read("keys")
     auth = tweepy.OAuthHandler(config.get('auth', 'consumer_key').strip(),
@@ -22,11 +22,15 @@ def getFeed(handle, count):
 
     public_tweets = api.user_timeline(id=handle, count=count)
     public_tweets.reverse()
-
+    today = datetime.datetime.today().date()
+    yesterday = today - datetime.timedelta(days=1)
+    # print(today, yesterday)
     for tweet in public_tweets:
         entry = {}
-        today = datetime.today().date()
-        if today == tweet.created_at.date():
+        # test = today == tweet.created_at.date() or tweet.created_at.date() == yesterday
+        # print(test)
+        if today == tweet.created_at.date() or tweet.created_at.date() == yesterday:
+            # print(tweet.created_at.date())
             entry.update({"text": tweet.text})
             entry.update({"image description": None})
             if 'media' in tweet.entities:
@@ -35,6 +39,7 @@ def getFeed(handle, count):
                         {"image description": annotateImage(media["media_url"])})
 
             feed.append(entry)
+    # print(feed)
     return feed
 
 

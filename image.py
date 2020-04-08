@@ -6,12 +6,18 @@ import textwrap
 def makeImages(handle, path, max_count):
     tweets = feed.getFeed(handle, max_count)
     failed = 0
+    f = open(path + "/text.txt", "w+")
+    f.write("@" + handle + "\n\n")
     for i, tweet in enumerate(tweets):
         try:
-            createImage(tweet['text'], tweet["image description"], handle, i - failed, path)
+            if tweet["image description"]:
+                f.write(tweet['text'] + "\nAttached image description: " + tweet["image description"] + "\n\n\n")
+            else: 
+                f.write(tweet['text'] + "\n\n\n")
         except:
             failed += 1
             continue
+    f.close()
 
 
 def createImage(tweet, image, handle, counter, path):

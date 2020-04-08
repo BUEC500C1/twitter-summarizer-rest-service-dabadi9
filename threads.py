@@ -14,13 +14,13 @@ done = [0, 0, 0, 0]
 
 
 def thread_init():
-    subprocess.call("rm ./thread0/*.mp4", cwd="media",
+    subprocess.call("rm ./thread0/*.txt", cwd="media",
                     stdout=subprocess.DEVNULL, shell=True)
-    subprocess.call("rm ./thread1/*.mp4", cwd="media",
+    subprocess.call("rm ./thread1/*.txt", cwd="media",
                     stdout=subprocess.DEVNULL, shell=True)
-    subprocess.call("rm ./thread2/*.mp4", cwd="media",
+    subprocess.call("rm ./thread2/*.txt", cwd="media",
                     stdout=subprocess.DEVNULL, shell=True)
-    subprocess.call("rm ./thread3/*.mp4", cwd="media",
+    subprocess.call("rm ./thread3/*.txt", cwd="media",
                     stdout=subprocess.DEVNULL, shell=True)
 
     for i in range(MAX_THREADS):
@@ -42,7 +42,7 @@ def imageThread():
             image.makeImages(task[0], "media/thread%s" % str(t_id), 500)
             break
     q_images.task_done()
-    q_video.put(t_id)
+    done[t_id] = 1
     time.sleep(0.001)
     thread = threading.Thread(name="Thread_%s" % str(t_id), target=imageThread)
     thread.start()
@@ -63,5 +63,4 @@ def videoThread():
 
 
 def producer(handle, t_id):
-    print(t_id)
     q_images.put((handle, t_id))
